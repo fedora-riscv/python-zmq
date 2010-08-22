@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        0.1.20100725git18f5d06
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -161,6 +161,10 @@ popd
 
 
 %changelog
+* Sun Aug 22 2010 Thomas Spura <tomspur@fedoraproject.org> - 0.1.20100725git18f5d06-4
+- rebuild with python3.2
+  http://lists.fedoraproject.org/pipermail/devel/2010-August/141368.html
+
 * Thu Aug  5 2010 Thomas Spura <tomspur@fedoraproject.org> - 0.1.20100725git18f5d06-3
 - add missing BR for 2to3
 
