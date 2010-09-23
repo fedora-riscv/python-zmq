@@ -11,8 +11,8 @@
 %global srcname pyzmq
 
 Name:           python-zmq
-Version:        0.1.20100725git18f5d06
-Release:        4%{?dist}
+Version:        2.0.8
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -23,7 +23,7 @@ URL:            http://www.zeromq.org/bindings:python
 # git clone http://github.com/zeromq/pyzmq.git pyzmq.git
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-Source0:        %{srcname}-%{version}.tar.xz
+Source0:        http://github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
 Patch0:         python-zmq-os-walk.patch
 
 BuildRequires:  python2-devel
@@ -83,6 +83,9 @@ chmod -x examples/kernel/frontend.py
 chmod -x examples/pubsub/topics_pub.py
 chmod -x examples/kernel/kernel.py
 chmod -x examples/pubsub/topics_sub.py
+
+# delete hidden files
+find examples -name '.*' | xargs rm -v
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -161,6 +164,9 @@ popd
 
 
 %changelog
+* Thu Sep 23 2010 Thomas Spura <tomspur@fedoraproject.org> - 2.0.8-1
+- update to new version to be comply with zeromp
+
 * Sun Aug 22 2010 Thomas Spura <tomspur@fedoraproject.org> - 0.1.20100725git18f5d06-4
 - rebuild with python3.2
   http://lists.fedoraproject.org/pipermail/devel/2010-August/141368.html
