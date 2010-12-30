@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        2.0.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -164,6 +164,9 @@ popd
 
 
 %changelog
+* Wed Dec 29 2010 David Malcolm <dmalcolm@redhat.com> - 2.0.8-2
+- rebuild for newer python3
+
 * Thu Sep 23 2010 Thomas Spura <tomspur@fedoraproject.org> - 2.0.8-1
 - update to new version to be comply with zeromp
 
