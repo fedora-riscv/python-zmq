@@ -3,16 +3,18 @@
 %endif
 
 
-%global _use_internal_dependency_generator 0
-%global __find_provides    %{_rpmconfigdir}/find-provides | grep -v _zmq.so
+%{?filter_setup:
+%filter_provides_in %{python_sitearch}/.*\.so$
+%filter_setup
+}
 
 %global checkout 18f5d061558a176f5496aa8e049182c1a7da64f6
 
 %global srcname pyzmq
 
 Name:           python-zmq
-Version:        2.0.8
-Release:        2%{?dist}
+Version:        2.0.10
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -23,8 +25,7 @@ URL:            http://www.zeromq.org/bindings:python
 # git clone http://github.com/zeromq/pyzmq.git pyzmq.git
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-Source0:        http://github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
-Patch0:         python-zmq-os-walk.patch
+Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -70,7 +71,6 @@ This package contains the python bindings.
 
 %prep
 %setup -q -n %{srcname}-%{version}
-%patch0 -p1
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
     sed '/\/usr\/bin\/env/d' $lib > $lib.new &&
@@ -79,13 +79,12 @@ for lib in zmq/eventloop/*.py; do
 done
 
 # remove excecutable bits
-chmod -x examples/kernel/frontend.py
 chmod -x examples/pubsub/topics_pub.py
-chmod -x examples/kernel/kernel.py
 chmod -x examples/pubsub/topics_sub.py
 
 # delete hidden files
-find examples -name '.*' | xargs rm -v
+#find examples -name '.*' | xargs rm -v
+
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -93,6 +92,7 @@ cp -a . %{py3dir}
 find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 rm -r %{py3dir}/examples
 2to3 --write --nobackups %{py3dir}
+
 %endif
 
 
@@ -129,18 +129,22 @@ popd
 
 %check
 rm zmq/__*
-pushd zmq
-PYTHONPATH=%{buildroot}%{python_sitearch} nosetests
-popd
+#pushd zmq
+    #PYTHONPATH=%{buildroot}%{python_sitearch} nosetests
+#popd
+PYTHONPATH=%{buildroot}%{python_sitearch} \
+    %{__python} setup.py test
 rm -r %{buildroot}%{python_sitearch}/zmq/tests
 
 %if 0%{?with_python3}
 # there is no python3-nose yet
 pushd %{py3dir}
     rm zmq/__*
-    pushd zmq
+    #pushd zmq
         #PYTHONPATH=%{buildroot}%{python3_sitearch} nosetests
-    popd
+    #popd
+    #PYTHONPATH=%{buildroot}%{python3_sitearch} \
+    #    %{__python3} setup.py test
     rm -r %{buildroot}%{python3_sitearch}/zmq/tests
 popd
 %endif
@@ -164,6 +168,11 @@ popd
 
 
 %changelog
+* Thu Jan 13 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.0.10-1
+- update to new version
+- remove patch (is upstream)
+- run tests differently
+
 * Wed Dec 29 2010 David Malcolm <dmalcolm@redhat.com> - 2.0.8-2
 - rebuild for newer python3
 
