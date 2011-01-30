@@ -13,7 +13,7 @@
 %global srcname pyzmq
 
 Name:           python-zmq
-Version:        2.0.10
+Version:        2.0.10.1
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -91,7 +91,7 @@ rm -rf %{py3dir}
 cp -a . %{py3dir}
 find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 rm -r %{py3dir}/examples
-2to3 --write --nobackups %{py3dir}
+
 %endif
 
 
@@ -100,7 +100,7 @@ CFLAGS="%{optflags}" %{__python} setupegg.py build
 
 %if 0%{?with_python3}
 pushd %{py3dir}
-CFLAGS="%{optflags}" %{__python3} setupegg.py build
+CFLAGS="%{optflags}" %{__python3} setup.py build
 popd
 %endif # with_python3
 
@@ -112,7 +112,7 @@ popd
 # to be the default for now).
 %if 0%{?with_python3}
 pushd %{py3dir}
-%{__python3} setupegg.py install --skip-build --root $RPM_BUILD_ROOT
+%{__python3} setup.py install --skip-build --root $RPM_BUILD_ROOT
 
 # remove tests doesn't work here, do that after running the tests
 
@@ -128,9 +128,6 @@ popd
 
 %check
 rm zmq/__*
-#pushd zmq
-    #PYTHONPATH=%{buildroot}%{python_sitearch} nosetests
-#popd
 PYTHONPATH=%{buildroot}%{python_sitearch} \
     %{__python} setup.py test
 rm -r %{buildroot}%{python_sitearch}/zmq/tests
@@ -167,6 +164,10 @@ popd
 
 
 %changelog
+* Sun Jan 30 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.0.10.1-1
+- update to new version (fixes memory leak)
+- no need to run 2to3 on python3 subpackage
+
 * Thu Jan 13 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.0.10-1
 - update to new version
 - remove patch (is upstream)
