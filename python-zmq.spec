@@ -12,9 +12,11 @@
 
 %global srcname pyzmq
 
+%global run_tests 0
+
 Name:           python-zmq
-Version:        2.0.10.1
-Release:        2%{?dist}
+Version:        2.1.1
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -127,22 +129,21 @@ popd
 
 
 %check
-rm zmq/__*
-PYTHONPATH=%{buildroot}%{python_sitearch} \
-    %{__python} setup.py test
-rm -r %{buildroot}%{python_sitearch}/zmq/tests
-
-%if 0%{?with_python3}
-# there is no python3-nose yet
-pushd %{py3dir}
+%if 0%{?run_tests}
     rm zmq/__*
-    #pushd zmq
-        #PYTHONPATH=%{buildroot}%{python3_sitearch} nosetests
-    #popd
+    PYTHONPATH=%{buildroot}%{python_sitearch} \
+    %{__python} setup.py test
+    rm -r %{buildroot}%{python_sitearch}/zmq/tests
+
+    %if 0%{?with_python3}
+    # there is no python3-nose yet
+    pushd %{py3dir}
+    rm zmq/__*
     #PYTHONPATH=%{buildroot}%{python3_sitearch} \
     #    %{__python3} setup.py test
     rm -r %{buildroot}%{python3_sitearch}/zmq/tests
-popd
+    popd
+    %endif
 %endif
 
 
@@ -164,6 +165,9 @@ popd
 
 
 %changelog
+* Wed Mar 23 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.1-1
+- update to new version (#682201)
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
