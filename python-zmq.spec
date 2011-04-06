@@ -12,8 +12,10 @@
 
 %global srcname pyzmq
 
+%global run_tests 1
+
 Name:           python-zmq
-Version:        2.0.10.1
+Version:        2.1.4
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -26,6 +28,8 @@ URL:            http://www.zeromq.org/bindings:python
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
+# upstream forgot to add this file into the tarball, fetched from current git
+Source1:        buildutils.py
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -85,6 +89,8 @@ chmod -x examples/pubsub/topics_sub.py
 # delete hidden files
 #find examples -name '.*' | xargs rm -v
 
+cp %{_sourcedir}/buildutils.py .
+
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -127,22 +133,21 @@ popd
 
 
 %check
-rm zmq/__*
-PYTHONPATH=%{buildroot}%{python_sitearch} \
-    %{__python} setup.py test
-rm -r %{buildroot}%{python_sitearch}/zmq/tests
-
-%if 0%{?with_python3}
-# there is no python3-nose yet
-pushd %{py3dir}
+%if 0%{?run_tests}
     rm zmq/__*
-    #pushd zmq
-        #PYTHONPATH=%{buildroot}%{python3_sitearch} nosetests
-    #popd
+    PYTHONPATH=%{buildroot}%{python_sitearch} \
+    %{__python} setup.py test
+    rm -r %{buildroot}%{python_sitearch}/zmq/tests
+
+    %if 0%{?with_python3}
+    # there is no python3-nose yet
+    pushd %{py3dir}
+    rm zmq/__*
     #PYTHONPATH=%{buildroot}%{python3_sitearch} \
     #    %{__python3} setup.py test
     rm -r %{buildroot}%{python3_sitearch}/zmq/tests
-popd
+    popd
+    %endif
 %endif
 
 
@@ -164,6 +169,15 @@ popd
 
 
 %changelog
+* Wed Apr  6 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.4-1
+- update to new version (#690199)
+
+* Wed Mar 23 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.1-1
+- update to new version (#682201)
+
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Sun Jan 30 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.0.10.1-1
 - update to new version (fixes memory leak)
 - no need to run 2to3 on python3 subpackage
