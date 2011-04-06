@@ -3,16 +3,20 @@
 %endif
 
 
-%global _use_internal_dependency_generator 0
-%global __find_provides    %{_rpmconfigdir}/find-provides | grep -v _zmq.so
+%{?filter_setup:
+%filter_provides_in %{python_sitearch}/.*\.so$
+%filter_setup
+}
 
 %global checkout 18f5d061558a176f5496aa8e049182c1a7da64f6
 
 %global srcname pyzmq
 
+%global run_tests 1
+
 Name:           python-zmq
-Version:        0.1.20100725git18f5d06
-Release:        3%{?dist}
+Version:        2.1.4
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -23,8 +27,9 @@ URL:            http://www.zeromq.org/bindings:python
 # git clone http://github.com/zeromq/pyzmq.git pyzmq.git
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-Source0:        %{srcname}-%{version}.tar.xz
-Patch0:         python-zmq-os-walk.patch
+Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
+# upstream forgot to add this file into the tarball, fetched from current git
+Source1:        buildutils.py
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -70,7 +75,6 @@ This package contains the python bindings.
 
 %prep
 %setup -q -n %{srcname}-%{version}
-%patch0 -p1
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
     sed '/\/usr\/bin\/env/d' $lib > $lib.new &&
@@ -79,17 +83,20 @@ for lib in zmq/eventloop/*.py; do
 done
 
 # remove excecutable bits
-chmod -x examples/kernel/frontend.py
 chmod -x examples/pubsub/topics_pub.py
-chmod -x examples/kernel/kernel.py
 chmod -x examples/pubsub/topics_sub.py
+
+# delete hidden files
+#find examples -name '.*' | xargs rm -v
+
+cp %{_sourcedir}/buildutils.py .
+
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
 find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 rm -r %{py3dir}/examples
-2to3 --write --nobackups %{py3dir}
 %endif
 
 
@@ -98,7 +105,7 @@ CFLAGS="%{optflags}" %{__python} setupegg.py build
 
 %if 0%{?with_python3}
 pushd %{py3dir}
-CFLAGS="%{optflags}" %{__python3} setupegg.py build
+CFLAGS="%{optflags}" %{__python3} setup.py build
 popd
 %endif # with_python3
 
@@ -110,7 +117,7 @@ popd
 # to be the default for now).
 %if 0%{?with_python3}
 pushd %{py3dir}
-%{__python3} setupegg.py install --skip-build --root $RPM_BUILD_ROOT
+%{__python3} setup.py install --skip-build --root $RPM_BUILD_ROOT
 
 # remove tests doesn't work here, do that after running the tests
 
@@ -125,21 +132,21 @@ popd
 
 
 %check
-rm zmq/__*
-pushd zmq
-PYTHONPATH=%{buildroot}%{python_sitearch} nosetests
-popd
-rm -r %{buildroot}%{python_sitearch}/zmq/tests
-
-%if 0%{?with_python3}
-# there is no python3-nose yet
-pushd %{py3dir}
+%if 0%{?run_tests}
     rm zmq/__*
-    pushd zmq
-        #PYTHONPATH=%{buildroot}%{python3_sitearch} nosetests
-    popd
+    PYTHONPATH=%{buildroot}%{python_sitearch} \
+    %{__python} setup.py test
+    rm -r %{buildroot}%{python_sitearch}/zmq/tests
+
+    %if 0%{?with_python3}
+    # there is no python3-nose yet
+    pushd %{py3dir}
+    rm zmq/__*
+    #PYTHONPATH=%{buildroot}%{python3_sitearch} \
+    #    %{__python3} setup.py test
     rm -r %{buildroot}%{python3_sitearch}/zmq/tests
-popd
+    popd
+    %endif
 %endif
 
 
@@ -161,6 +168,24 @@ popd
 
 
 %changelog
+* Wed Apr  6 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.4-1
+- update to new version (#690199)
+
+* Wed Mar 23 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.1-1
+- update to new version (#682201)
+
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Sun Jan 30 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.0.10.1-1
+- update to new version (fixes memory leak)
+- no need to run 2to3 on python3 subpackage
+
+* Thu Jan 13 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.0.10-1
+- update to new version
+- remove patch (is upstream)
+- run tests differently
+
 * Thu Aug  5 2010 Thomas Spura <tomspur@fedoraproject.org> - 0.1.20100725git18f5d06-3
 - add missing BR for 2to3
 
