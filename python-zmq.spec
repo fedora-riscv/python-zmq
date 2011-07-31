@@ -16,7 +16,7 @@
 
 Name:           python-zmq
 Version:        2.1.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -56,6 +56,21 @@ multiple transport protocols and more.
 This package contains the python bindings.
 
 
+%package tests
+Summary:        Software library for fast, message-based applications
+Group:          Development/Libraries
+License:        LGPLv3+
+%description tests
+The 0MQ lightweight messaging kernel is a library which extends the
+standard socket interfaces with features traditionally provided by
+specialized messaging middle-ware products. 0MQ sockets provide an
+abstraction of asynchronous message queues, multiple messaging
+patterns, message filtering (subscriptions), seamless access to
+multiple transport protocols and more.
+
+This package contains the testsuite for the python bindings.
+
+
 %if 0%{?with_python3}
 %package -n python3-zmq
 Summary:        Software library for fast, message-based applications
@@ -70,6 +85,22 @@ patterns, message filtering (subscriptions), seamless access to
 multiple transport protocols and more.
 
 This package contains the python bindings.
+
+
+%package -n python3-zmq-tests
+Summary:        Software library for fast, message-based applications
+Group:          Development/Libraries
+License:        LGPLv3+
+%description -n python3-zmq-tests
+The 0MQ lightweight messaging kernel is a library which extends the
+standard socket interfaces with features traditionally provided by
+specialized messaging middle-ware products. 0MQ sockets provide an
+abstraction of asynchronous message queues, multiple messaging
+patterns, message filtering (subscriptions), seamless access to
+multiple transport protocols and more.
+
+This package contains the testsuite for the python bindings.
+
 %endif
 
 
@@ -89,7 +120,7 @@ chmod -x examples/pubsub/topics_sub.py
 # delete hidden files
 #find examples -name '.*' | xargs rm -v
 
-cp %{_sourcedir}/buildutils.py .
+cp %{SOURCE1} .
 
 
 %if 0%{?with_python3}
@@ -137,7 +168,6 @@ popd
     rm zmq/__*
     PYTHONPATH=%{buildroot}%{python_sitearch} \
     %{__python} setup.py test
-    rm -r %{buildroot}%{python_sitearch}/zmq/tests
 
     %if 0%{?with_python3}
     # there is no python3-nose yet
@@ -145,7 +175,6 @@ popd
     rm zmq/__*
     #PYTHONPATH=%{buildroot}%{python3_sitearch} \
     #    %{__python3} setup.py test
-    rm -r %{buildroot}%{python3_sitearch}/zmq/tests
     popd
     %endif
 %endif
@@ -157,6 +186,9 @@ popd
 %{python_sitearch}/%{srcname}-*.egg-info
 %{python_sitearch}/zmq
 
+%files tests
+%defattr(-,root,root,-)
+%{python_sitearch}/zmq/tests
 
 %if 0%{?with_python3}
 %files -n python3-zmq
@@ -165,10 +197,18 @@ popd
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
 %{python3_sitearch}/zmq
+
+%files -n python3-zmq-tests
+%defattr(-,root,root,-)
+%{python3_sitearch}/zmq/tests
 %endif
 
 
 %changelog
+* Sun Jul 31 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.4-2
+- don't delete the tests, needed by ipython-tests on runtime
+- don't use _sourcedir macro
+
 * Wed Apr  6 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.4-1
 - update to new version (#690199)
 
