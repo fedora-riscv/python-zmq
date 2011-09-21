@@ -15,8 +15,8 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        2.1.4
-Release:        2%{?dist}
+Version:        2.1.9
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -28,8 +28,6 @@ URL:            http://www.zeromq.org/bindings:python
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
-# upstream forgot to add this file into the tarball, fetched from current git
-Source1:        buildutils.py
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -41,8 +39,7 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 # needed for 2to3
 BuildRequires:  python-tools
-# not yet build
-#BuildRequires:  python3-nose
+BuildRequires:  python3-nose
 %endif
 
 %description
@@ -120,8 +117,6 @@ chmod -x examples/pubsub/topics_sub.py
 # delete hidden files
 #find examples -name '.*' | xargs rm -v
 
-cp %{SOURCE1} .
-
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -167,14 +162,14 @@ popd
 %if 0%{?run_tests}
     rm zmq/__*
     PYTHONPATH=%{buildroot}%{python_sitearch} \
-    %{__python} setup.py test
+        %{__python} setup.py test
 
     %if 0%{?with_python3}
     # there is no python3-nose yet
     pushd %{py3dir}
     rm zmq/__*
-    #PYTHONPATH=%{buildroot}%{python3_sitearch} \
-    #    %{__python3} setup.py test
+    PYTHONPATH=%{buildroot}%{python3_sitearch} \
+        %{__python3} setup.py test
     popd
     %endif
 %endif
@@ -205,6 +200,10 @@ popd
 
 
 %changelog
+* Wed Sep 21 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-1
+- update to new version
+- run testsuite on python3
+
 * Sun Jul 31 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.4-2
 - don't delete the tests, needed by ipython-tests on runtime
 - don't use _sourcedir macro
