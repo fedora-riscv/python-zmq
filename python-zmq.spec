@@ -2,6 +2,17 @@
 %global with_python3 1
 %endif
 
+%if 0%{?rhel} <= 5
+%global pybasever 2.6
+%global __python_ver 26
+%global __python %{_bindir}/python%{?pybasever}
+%define python python26
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
+%define _with_rhel5 1
+%define rhel5 %{?_with_rhel5:1}%{!?_with_rhel5:0}
 
 %{?filter_setup:
 %filter_provides_in %{python_sitearch}/.*\.so$
@@ -14,7 +25,7 @@
 
 %global run_tests 1
 
-Name:           python-zmq
+Name:           %{python}-zmq
 Version:        2.1.9
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
@@ -28,11 +39,19 @@ URL:            http://www.zeromq.org/bindings:python
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+%if rhel5
+BuildRequires:  python26-devel
+BuildRequires:  python26-distribute
+BuildRequires:  zeromq-devel
+BuildRequires:  python26-nose
+%else
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
 BuildRequires:  zeromq-devel
 BuildRequires:  python-nose
+%endif
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
