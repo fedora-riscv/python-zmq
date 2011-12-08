@@ -16,7 +16,7 @@
 
 Name:           python-zmq
 Version:        2.1.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
