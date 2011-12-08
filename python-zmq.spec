@@ -228,6 +228,7 @@ popd
 %doc README.rst COPYING.LESSER examples/
 %{python_sitearch}/%{srcname}-*.egg-info
 %{python_sitearch}/zmq
+%exclude %{python_sitearch}/zmq/tests
 
 %if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
 %files -n python26-zmq-tests
@@ -244,6 +245,7 @@ popd
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
 %{python3_sitearch}/zmq
+%exclude %{python3_sitearch}/zmq/tests
 
 %files -n python3-zmq-tests
 %defattr(-,root,root,-)
@@ -256,6 +258,7 @@ popd
 - use proper buildroot macro
 - use python2.6 on el5 and below (only build intended for el5)
 - build python26-zmq and ignore python-zmq packages on el5
+- don't include tests twice
 
 * Wed Sep 21 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-1
 - update to new version
