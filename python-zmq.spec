@@ -144,7 +144,7 @@ popd
 # to be the default for now).
 %if 0%{?with_python3}
 pushd %{py3dir}
-%{__python3} setup.py install --skip-build --root $RPM_BUILD_ROOT
+%{__python3} setup.py install --skip-build --root %{buildroot}
 
 # remove tests doesn't work here, do that after running the tests
 
@@ -200,6 +200,9 @@ popd
 
 
 %changelog
+* Thu Dec  8 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-2
+- use proper buildroot macro
+
 * Wed Sep 21 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-1
 - update to new version
 - run testsuite on python3
