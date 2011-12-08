@@ -2,22 +2,21 @@
 %global with_python3 1
 %endif
 
-%if 0%{?rhel} <= 5
+# el5 has python-2.4, but 2.5 is minimum, so build with python2.6:
+# http://lists.zeromq.org/pipermail/zeromq-dev/2010-November/007597.html
+%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
 %global pybasever 2.6
 %global __python_ver 26
 %global __python %{_bindir}/python%{?pybasever}
-%define python python26
+%global python python26
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
-%define _with_rhel5 1
-%define rhel5 %{?_with_rhel5:1}%{!?_with_rhel5:0}
-
+%else
 %{?filter_setup:
 %filter_provides_in %{python_sitearch}/.*\.so$
 %filter_setup
 }
+%endif
 
 %global checkout 18f5d061558a176f5496aa8e049182c1a7da64f6
 
@@ -25,9 +24,9 @@
 
 %global run_tests 1
 
-Name:           %{python}-zmq
+Name:           python-zmq
 Version:        2.1.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -41,17 +40,17 @@ URL:            http://www.zeromq.org/bindings:python
 Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-%if rhel5
+%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
 BuildRequires:  python26-devel
 BuildRequires:  python26-distribute
-BuildRequires:  zeromq-devel
 BuildRequires:  python26-nose
 %else
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
-BuildRequires:  zeromq-devel
 BuildRequires:  python-nose
 %endif
+
+BuildRequires:  zeromq-devel
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -60,6 +59,7 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python-tools
 BuildRequires:  python3-nose
 %endif
+
 
 %description
 The 0MQ lightweight messaging kernel is a library which extends the
@@ -72,11 +72,36 @@ multiple transport protocols and more.
 This package contains the python bindings.
 
 
-%package tests
+%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
+%package -n python26-zmq
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
+%description -n python26-zmq
+The 0MQ lightweight messaging kernel is a library which extends the
+standard socket interfaces with features traditionally provided by
+specialized messaging middle-ware products. 0MQ sockets provide an
+abstraction of asynchronous message queues, multiple messaging
+patterns, message filtering (subscriptions), seamless access to
+multiple transport protocols and more.
+
+This package contains the python bindings for python26.
+%endif
+
+
+%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
+%package -n python26-zmq-tests
+%else
+%package tests
+%endif
+Summary:        Software library for fast, message-based applications
+Group:          Development/Libraries
+License:        LGPLv3+
+%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
+%description -n python26-zmq-tests
+%else
 %description tests
+%endif
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
 specialized messaging middle-ware products. 0MQ sockets provide an
@@ -194,13 +219,21 @@ popd
 %endif
 
 
+%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
+%files -n python26-zmq
+%else
 %files
+%endif
 %defattr(-,root,root,-)
 %doc README.rst COPYING.LESSER examples/
 %{python_sitearch}/%{srcname}-*.egg-info
 %{python_sitearch}/zmq
 
+%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
+%files -n python26-zmq-tests
+%else
 %files tests
+%endif
 %defattr(-,root,root,-)
 %{python_sitearch}/zmq/tests
 
@@ -219,6 +252,11 @@ popd
 
 
 %changelog
+* Thu Dec  8 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-2
+- use proper buildroot macro
+- use python2.6 on el5 and below (only build intended for el5)
+- build python26-zmq and ignore python-zmq packages on el5
+
 * Wed Sep 21 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-1
 - update to new version
 - run testsuite on python3
