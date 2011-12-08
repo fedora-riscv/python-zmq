@@ -180,6 +180,7 @@ popd
 %doc README.rst COPYING.LESSER examples/
 %{python_sitearch}/%{srcname}-*.egg-info
 %{python_sitearch}/zmq
+%exclude %{python_sitearch}/zmq/tests
 
 %files tests
 %defattr(-,root,root,-)
@@ -192,6 +193,7 @@ popd
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
 %{python3_sitearch}/zmq
+%exclude %{python3_sitearch}/zmq/tests
 
 %files -n python3-zmq-tests
 %defattr(-,root,root,-)
@@ -202,6 +204,7 @@ popd
 %changelog
 * Thu Dec  8 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-2
 - use proper buildroot macro
+- don't include tests twice
 
 * Wed Sep 21 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-1
 - update to new version
