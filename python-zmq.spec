@@ -5,6 +5,9 @@
 
 %{?filter_setup:
 %filter_provides_in %{python_sitearch}/.*\.so$
+%if 0%{?fedora} > 12 || 0%{?rhel} > 6
+%filter_provides_in %{python3_sitearch}/.*\.so$
+%endif
 %filter_setup
 }
 
@@ -16,7 +19,7 @@
 
 Name:           python-zmq
 Version:        2.1.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -57,6 +60,7 @@ This package contains the python bindings.
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
+Requires:       python-zmq = %{version}-%{release}
 %description tests
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
@@ -88,6 +92,7 @@ This package contains the python bindings.
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
+Requires:       python3-zmq = %{version}-%{release}
 %description -n python3-zmq-tests
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
@@ -202,6 +207,10 @@ popd
 
 
 %changelog
+* Wed Dec 14 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-3
+- tests package requires main package
+- filter python3 libs
+
 * Thu Dec  8 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-2
 - use proper buildroot macro
 - don't include tests twice
