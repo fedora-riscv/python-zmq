@@ -42,13 +42,6 @@ URL:            http://www.zeromq.org/bindings:python
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
 
-%if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
-# filtering the el5 way
-Source10:       pythondeps.sh
-%global __python_requires %{SOURCE10}
-%global __python_provides %{SOURCE10}
-%endif
-
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if ! ( 0%{?fedora} > 12 || 0%{?rhel} > 5)
@@ -270,7 +263,7 @@ popd
 %changelog
 * Wed Dec 14 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-3
 - tests package requires main package
-- filter python3 and python26 libs
+- filter python3
 
 * Thu Dec  8 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-2
 - use proper buildroot macro
