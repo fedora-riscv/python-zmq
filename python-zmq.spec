@@ -19,7 +19,7 @@
 
 Name:           python-zmq
 Version:        2.1.9
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -207,6 +207,9 @@ popd
 
 
 %changelog
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.1.9-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Dec 14 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-3
 - tests package requires main package
 - filter python3 libs
