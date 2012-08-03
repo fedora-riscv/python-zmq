@@ -19,7 +19,7 @@
 
 Name:           python-zmq
 Version:        2.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -36,6 +36,7 @@ BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
 BuildRequires:  zeromq-devel
 BuildRequires:  python-nose
+BuildRequires:  Cython
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -108,6 +109,11 @@ This package contains the testsuite for the python bindings.
 
 %prep
 %setup -q -n %{srcname}-%{version}
+
+# forcibly regenerate the Cython-generated .c files:
+find -name "*.c" -delete
+%{__python} setup.py cython
+
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
     sed '/\/usr\/bin\/env/d' $lib > $lib.new &&
@@ -207,6 +213,9 @@ popd
 
 
 %changelog
+* Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-4
+- force regeneration of .c files by Cython (needed for python 3.3 support)
+
 * Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-3
 - remove rhel logic from with_python3 conditional
 
