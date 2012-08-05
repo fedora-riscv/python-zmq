@@ -19,7 +19,7 @@
 
 Name:           python-zmq
 Version:        2.2.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -213,6 +213,9 @@ popd
 
 
 %changelog
+* Sat Aug 04 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-5
+- rebuild for https://fedoraproject.org/wiki/Features/Python_3.3
+
 * Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-4
 - force regeneration of .c files by Cython (needed for python 3.3 support)
 
