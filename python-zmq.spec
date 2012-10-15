@@ -214,7 +214,7 @@ popd
 
 
 %changelog
-* Thu Apr 26 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0.1-1
+* Mon Oct 15 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0.1-1
 - update to 2.2.0.1
 - move to BR zeromq3
 
