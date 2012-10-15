@@ -111,8 +111,11 @@ This package contains the testsuite for the python bindings.
 %setup -q -n %{srcname}-%{version}
 
 # forcibly regenerate the Cython-generated .c files:
-find -name "*.c" -delete
+find zmq -name "*.c" -delete
 %{__python} setup.py cython
+
+# remove bundled libraries
+rm -rf bundled
 
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
@@ -217,6 +220,8 @@ popd
 * Mon Oct 15 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0.1-1
 - update to 2.2.0.1
 - move to BR zeromq3
+- not all *.c files may be deleted, when receneration of .c files by Cython
+- remove bundled folder explicitely
 
 * Sat Aug 04 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-5
 - rebuild for https://fedoraproject.org/wiki/Features/Python_3.3
