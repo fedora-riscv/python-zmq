@@ -19,7 +19,7 @@
 
 Name:           python-zmq
 Version:        2.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -34,7 +34,7 @@ Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
-BuildRequires:  zeromq-devel
+BuildRequires:  zeromq3-devel
 BuildRequires:  python-nose
 
 %if 0%{?with_python3}
@@ -207,6 +207,9 @@ popd
 
 
 %changelog
+* Mon Oct 15 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0-4
+- move to BR zeromq3
+
 * Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-3
 - remove rhel logic from with_python3 conditional
 
