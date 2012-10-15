@@ -18,8 +18,8 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        2.2.0
-Release:        5%{?dist}
+Version:        2.2.0.1
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -34,7 +34,7 @@ Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
-BuildRequires:  zeromq-devel
+BuildRequires:  zeromq3-devel
 BuildRequires:  python-nose
 BuildRequires:  Cython
 
@@ -134,6 +134,7 @@ rm -rf %{py3dir}
 cp -a . %{py3dir}
 find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 rm -r %{py3dir}/examples
+2to3 --write --nobackups %{py3dir}/zmq/green
 
 %endif
 
@@ -213,6 +214,10 @@ popd
 
 
 %changelog
+* Thu Apr 26 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0.1-1
+- update to 2.2.0.1
+- move to BR zeromq3
+
 * Sat Aug 04 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-5
 - rebuild for https://fedoraproject.org/wiki/Features/Python_3.3
 
