@@ -1,11 +1,11 @@
-%if 0%{?fedora} > 12 || 0%{?rhel} > 6
+%if 0%{?fedora} > 12
 %global with_python3 1
 %endif
 
 
 %{?filter_setup:
 %filter_provides_in %{python_sitearch}/.*\.so$
-%if 0%{?fedora} > 12 || 0%{?rhel} > 6
+%if 0%{?with_python3}
 %filter_provides_in %{python3_sitearch}/.*\.so$
 %endif
 %filter_setup
@@ -18,7 +18,7 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        2.1.9
+Version:        2.2.0
 Release:        3%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -207,6 +207,21 @@ popd
 
 
 %changelog
+* Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 2.2.0-3
+- remove rhel logic from with_python3 conditional
+
+* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Thu Apr 26 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0-1
+- update to 2.2.0
+
+* Wed Mar  7 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.1.11-1
+- update to new version
+
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.1.9-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Dec 14 2011 Thomas Spura <tomspur@fedoraproject.org> - 2.1.9-3
 - tests package requires main package
 - filter python3 libs
