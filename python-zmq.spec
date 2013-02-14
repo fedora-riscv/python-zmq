@@ -19,7 +19,7 @@
 
 Name:           python-zmq
 Version:        2.2.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -217,6 +217,9 @@ popd
 
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.0.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Mon Oct 15 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0.1-1
 - update to 2.2.0.1
 - move to BR zeromq3
