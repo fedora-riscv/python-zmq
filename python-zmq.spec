@@ -18,19 +18,19 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        2.2.0.1
-Release:        2%{?dist}
+Version:        13.0.0
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
-License:        LGPLv3+ and ASL 2.0
+License:        LGPLv3+ and ASL 2.0 and BSD
 URL:            http://www.zeromq.org/bindings:python
 # VCS:          git:http://github.com/zeromq/pyzmq.git
 # git checkout with the commands:
 # git clone http://github.com/zeromq/pyzmq.git pyzmq.git
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
+Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -192,7 +192,7 @@ popd
 
 %files
 %defattr(-,root,root,-)
-%doc README.rst COPYING.LESSER examples/
+%doc README.md COPYING.* examples/
 %{python_sitearch}/%{srcname}-*.egg-info
 %{python_sitearch}/zmq
 %exclude %{python_sitearch}/zmq/tests
@@ -204,7 +204,7 @@ popd
 %if 0%{?with_python3}
 %files -n python3-zmq
 %defattr(-,root,root,-)
-%doc README.rst COPYING.LESSER
+%doc README.md COPYING.*
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
 %{python3_sitearch}/zmq
@@ -217,6 +217,10 @@ popd
 
 
 %changelog
+* Wed Mar 20 2013 Thomas Spura <tomspur@fedoraproject.org> - 13.0.0-1
+- update to 13.0.0
+- add BSD to license list
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.0.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
