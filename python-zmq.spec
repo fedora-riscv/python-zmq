@@ -18,8 +18,8 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        13.0.0
-Release:        2%{?dist}
+Version:        13.0.2
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -217,6 +217,9 @@ popd
 
 
 %changelog
+* Mon Aug  5 2013 Thomas Spura <tomspur@fedoraproject.org> - 13.0.2-1
+- update to new version (fixes FTBFS)
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.0.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
