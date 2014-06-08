@@ -19,7 +19,7 @@
 
 Name:           python-zmq
 Version:        13.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -217,6 +217,9 @@ popd
 
 
 %changelog
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.0.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Wed May 14 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 13.0.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Changes/Python_3.4
 
