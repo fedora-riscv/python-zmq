@@ -18,8 +18,8 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        13.0.2
-Release:        4%{?dist}
+Version:        14.3.1
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -31,6 +31,8 @@ URL:            http://www.zeromq.org/bindings:python
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
+
+BuildRequires:  chrpath
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -110,12 +112,12 @@ This package contains the testsuite for the python bindings.
 %prep
 %setup -q -n %{srcname}-%{version}
 
+# remove bundled libraries
+rm -rf bundled
+
 # forcibly regenerate the Cython-generated .c files:
 find zmq -name "*.c" -delete
 %{__python} setup.py cython
-
-# remove bundled libraries
-rm -rf bundled
 
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
@@ -154,6 +156,7 @@ popd
 
 
 %install
+%global RPATH /zmq/{backend/cython,devices}
 # Must do the python3 install first because the scripts in /usr/bin are
 # overwritten with every setup.py install (and we want the python2 version
 # to be the default for now).
@@ -161,16 +164,14 @@ popd
 pushd %{py3dir}
 %{__python3} setup.py install --skip-build --root %{buildroot}
 
-# remove tests doesn't work here, do that after running the tests
-
 popd
+chrpath --delete %{buildroot}%{python3_sitearch}%{RPATH}/*.so
 %endif # with_python3
 
 
 %{__python} setupegg.py install -O1 --skip-build --root %{buildroot}
 
-# remove tests doesn't work here, do that after running the tests
-
+chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %check
@@ -217,6 +218,9 @@ popd
 
 
 %changelog
+* Wed Aug 27 2014 Thomas Spura <tomspur@fedoraproject.org> - 14.3.1-1
+- update to 14.3.1
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.0.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
