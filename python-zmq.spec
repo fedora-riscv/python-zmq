@@ -18,24 +18,27 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        2.2.0.1
+Version:        14.3.1
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
-License:        LGPLv3+ and ASL 2.0
+License:        LGPLv3+ and ASL 2.0 and BSD
 URL:            http://www.zeromq.org/bindings:python
 # VCS:          git:http://github.com/zeromq/pyzmq.git
 # git checkout with the commands:
 # git clone http://github.com/zeromq/pyzmq.git pyzmq.git
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-Source0:        http://cloud.github.com/downloads/zeromq/pyzmq/pyzmq-%{version}.tar.gz
+Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
+
+BuildRequires:  chrpath
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
 BuildRequires:  zeromq3-devel
 BuildRequires:  python-nose
+BuildRequires:  Cython
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -108,6 +111,14 @@ This package contains the testsuite for the python bindings.
 
 %prep
 %setup -q -n %{srcname}-%{version}
+
+# remove bundled libraries
+rm -rf bundled
+
+# forcibly regenerate the Cython-generated .c files:
+find zmq -name "*.c" -delete
+%{__python} setup.py cython
+
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
     sed '/\/usr\/bin\/env/d' $lib > $lib.new &&
@@ -128,6 +139,7 @@ rm -rf %{py3dir}
 cp -a . %{py3dir}
 find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 rm -r %{py3dir}/examples
+2to3 --write --nobackups %{py3dir}/zmq/green
 
 %endif
 
@@ -144,6 +156,7 @@ popd
 
 
 %install
+%global RPATH /zmq/{backend/cython,devices}
 # Must do the python3 install first because the scripts in /usr/bin are
 # overwritten with every setup.py install (and we want the python2 version
 # to be the default for now).
@@ -151,16 +164,14 @@ popd
 pushd %{py3dir}
 %{__python3} setup.py install --skip-build --root %{buildroot}
 
-# remove tests doesn't work here, do that after running the tests
-
 popd
+chrpath --delete %{buildroot}%{python3_sitearch}%{RPATH}/*.so
 %endif # with_python3
 
 
 %{__python} setupegg.py install -O1 --skip-build --root %{buildroot}
 
-# remove tests doesn't work here, do that after running the tests
-
+chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %check
@@ -182,7 +193,7 @@ popd
 
 %files
 %defattr(-,root,root,-)
-%doc README.rst COPYING.LESSER examples/
+%doc README.md COPYING.* examples/
 %{python_sitearch}/%{srcname}-*.egg-info
 %{python_sitearch}/zmq
 %exclude %{python_sitearch}/zmq/tests
@@ -194,7 +205,7 @@ popd
 %if 0%{?with_python3}
 %files -n python3-zmq
 %defattr(-,root,root,-)
-%doc README.rst COPYING.LESSER
+%doc README.md COPYING.*
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
 %{python3_sitearch}/zmq
@@ -207,6 +218,9 @@ popd
 
 
 %changelog
+* Wed Aug 27 2014 Thomas Spura <tomspur@fedoraproject.org> - 14.3.1-1
+- update to 14.3.1 (#1134571)
+
 * Fri Dec 14 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0.1-1
 - update to 2.2.0.1
 
