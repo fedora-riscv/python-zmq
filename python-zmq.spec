@@ -115,10 +115,6 @@ This package contains the testsuite for the python bindings.
 # remove bundled libraries
 rm -rf bundled
 
-# forcibly regenerate the Cython-generated .c files:
-find zmq -name "*.c" -delete
-%{__python} setup.py cython
-
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
     sed '/\/usr\/bin\/env/d' $lib > $lib.new &&
@@ -220,6 +216,7 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %changelog
 * Wed Aug 27 2014 Thomas Spura <tomspur@fedoraproject.org> - 14.3.1-1
 - update to 14.3.1 (#1134571)
+- don't regenerate cython files
 
 * Fri Dec 14 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.2.0.1-1
 - update to 2.2.0.1
