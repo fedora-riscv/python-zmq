@@ -174,7 +174,7 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %if 0%{?run_tests}
     rm zmq/__*
     PYTHONPATH=%{buildroot}%{python_sitearch} \
-        %{__python} setup.py test
+        %{_bindir}/nosetests -v zmq.tests
 
     %if 0%{?with_python3}
     # there is no python3-nose yet
