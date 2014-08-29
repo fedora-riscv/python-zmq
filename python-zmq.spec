@@ -173,6 +173,7 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %check
 %if 0%{?run_tests}
     rm zmq/__*
+    cd %{buildroot}%{python_sitearch}
     PYTHONPATH=%{buildroot}%{python_sitearch} \
         %{_bindir}/nosetests -v zmq.tests
 
