@@ -18,7 +18,7 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        14.3.1
+Version:        14.4.1
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -36,7 +36,7 @@ BuildRequires:  chrpath
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
-BuildRequires:  zeromq3-devel
+BuildRequires:  zeromq-devel
 BuildRequires:  python-nose
 BuildRequires:  Cython
 
@@ -47,6 +47,7 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python-tools
 BuildRequires:  python3-nose
 %endif
+
 
 %description
 The 0MQ lightweight messaging kernel is a library which extends the
@@ -116,8 +117,8 @@ This package contains the testsuite for the python bindings.
 rm -rf bundled
 
 # forcibly regenerate the Cython-generated .c files:
-find zmq -name "*.c" -delete
-%{__python} setup.py cython
+#find zmq -name "*.c" -delete
+#%{__python} setup.py cython
 
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
@@ -140,7 +141,6 @@ cp -a . %{py3dir}
 find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 rm -r %{py3dir}/examples
 2to3 --write --nobackups %{py3dir}/zmq/green
-
 %endif
 
 
@@ -218,6 +218,10 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Mon Nov 17 2014 Thomas Spura <tomspur@fedoraproject.org> - 14.4.1-1
+- update to 14.4.1
+- build against zeromq-4
+
 * Wed Aug 27 2014 Thomas Spura <tomspur@fedoraproject.org> - 14.3.1-1
 - update to 14.3.1
 
