@@ -19,7 +19,7 @@
 
 Name:           python-zmq
 Version:        14.4.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -218,6 +218,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 14.4.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Mon Nov 17 2014 Thomas Spura <tomspur@fedoraproject.org> - 14.4.1-1
 - update to 14.4.1
 - build against zeromq-4
