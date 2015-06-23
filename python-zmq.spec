@@ -41,7 +41,8 @@ BuildRequires:  python-nose
 BuildRequires:  Cython
 
 # For some tests
-BuildRequires:  czmq-devel
+# czmq currently FTBFS, so enable it some time later
+#BuildRequires:  czmq-devel
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
