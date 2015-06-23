@@ -18,8 +18,8 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        14.4.1
-Release:        2%{?dist}
+Version:        14.7.0
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -39,6 +39,9 @@ BuildRequires:  python-setuptools
 BuildRequires:  zeromq-devel
 BuildRequires:  python-nose
 BuildRequires:  Cython
+
+# For some tests
+BuildRequires:  czmq-devel
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -118,7 +121,7 @@ rm -rf bundled
 
 # forcibly regenerate the Cython-generated .c files:
 #find zmq -name "*.c" -delete
-#%{__python} setup.py cython
+#%%{__python} setup.py cython
 
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
@@ -218,6 +221,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Tue Jun 23 2015 Thomas Spura <tomspur@fedoraproject.org> - 14.7.0-1
+- update to 14.7.0
+
 * Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 14.4.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
