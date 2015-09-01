@@ -1,7 +1,10 @@
-%if 0%{?fedora} > 12
 %global with_python3 1
-%endif
 
+%if 0%{?fedora}
+%{!?python3_pkgversion: %global python3_pkgversion 3}
+%else
+%{!?python3_pkgversion: %global python3_pkgversion 34}
+%endif
 
 %{?filter_setup:
 %filter_provides_in %{python_sitearch}/.*\.so$
@@ -19,7 +22,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -45,11 +48,11 @@ BuildRequires:  Cython
 #BuildRequires:  czmq-devel
 
 %if 0%{?with_python3}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 # needed for 2to3
 BuildRequires:  python-tools
-BuildRequires:  python3-nose
+BuildRequires:  python%{python3_pkgversion}-nose
 %endif
 
 
@@ -81,11 +84,11 @@ This package contains the testsuite for the python bindings.
 
 
 %if 0%{?with_python3}
-%package -n python3-zmq
+%package -n python%{python3_pkgversion}-zmq
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
-%description -n python3-zmq
+%description -n python%{python3_pkgversion}-zmq
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
 specialized messaging middle-ware products. 0MQ sockets provide an
@@ -96,12 +99,12 @@ multiple transport protocols and more.
 This package contains the python bindings.
 
 
-%package -n python3-zmq-tests
+%package -n python%{python3_pkgversion}-zmq-tests
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
-Requires:       python3-zmq = %{version}-%{release}
-%description -n python3-zmq-tests
+Requires:       python%{python3_pkgversion}-zmq = %{version}-%{release}
+%description -n python%{python3_pkgversion}-zmq-tests
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
 specialized messaging middle-ware products. 0MQ sockets provide an
@@ -209,7 +212,7 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %{python_sitearch}/zmq/tests
 
 %if 0%{?with_python3}
-%files -n python3-zmq
+%files -n python%{python3_pkgversion}-zmq
 %defattr(-,root,root,-)
 %doc README.md COPYING.*
 # examples/
@@ -217,13 +220,16 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %{python3_sitearch}/zmq
 %exclude %{python3_sitearch}/zmq/tests
 
-%files -n python3-zmq-tests
+%files -n python%{python3_pkgversion}-zmq-tests
 %defattr(-,root,root,-)
 %{python3_sitearch}/zmq/tests
 %endif
 
 
 %changelog
+* Mon Jun 29 2015 Ralph Bean <rbean@redhat.com> - 14.7.0-2
+- Support python34 on EPEL7.
+
 * Tue Jun 23 2015 Thomas Spura <tomspur@fedoraproject.org> - 14.7.0-1
 - update to 14.7.0
 - temporarily disable python3 testsuite as it hangs on koji
