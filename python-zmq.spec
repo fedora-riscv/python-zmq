@@ -17,6 +17,7 @@
 %global checkout 18f5d061558a176f5496aa8e049182c1a7da64f6
 
 %global srcname pyzmq
+%global modname zmq
 
 %global run_tests 1
 
@@ -66,13 +67,27 @@ multiple transport protocols and more.
 
 This package contains the python bindings.
 
+%package -n python2-zmq
+Summary:        Software library for fast, message-based applications
+%{?python_provide:%python_provide python2-%{modname}}
+%description -n python2-zmq
+The 0MQ lightweight messaging kernel is a library which extends the
+standard socket interfaces with features traditionally provided by
+specialized messaging middle-ware products. 0MQ sockets provide an
+abstraction of asynchronous message queues, multiple messaging
+patterns, message filtering (subscriptions), seamless access to
+multiple transport protocols and more.
 
-%package tests
+This package contains the python bindings.
+
+
+%package -n python2-zmq-tests
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
-Requires:       python-zmq = %{version}-%{release}
-%description tests
+Requires:       python2-zmq = %{version}-%{release}
+%{?python_provide:%python_provide python2-%{modname}-tests}
+%description -n python2-zmq-tests
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
 specialized messaging middle-ware products. 0MQ sockets provide an
@@ -88,6 +103,7 @@ This package contains the testsuite for the python bindings.
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}}
 %description -n python%{python3_pkgversion}-zmq
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
@@ -104,6 +120,7 @@ Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
 Requires:       python%{python3_pkgversion}-zmq = %{version}-%{release}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}-tests}
 %description -n python%{python3_pkgversion}-zmq-tests
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
@@ -152,7 +169,7 @@ rm -r %{py3dir}/examples
 
 
 %build
-CFLAGS="%{optflags}" %{__python} setupegg.py build
+CFLAGS="%{optflags}" %{__python2} setupegg.py build
 
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -200,16 +217,16 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %endif
 
 
-%files
+%files -n python2-%{modname}
 %defattr(-,root,root,-)
 %doc README.md COPYING.* examples/
-%{python_sitearch}/%{srcname}-*.egg-info
-%{python_sitearch}/zmq
-%exclude %{python_sitearch}/zmq/tests
+%{python2_sitearch}/%{srcname}-*.egg-info
+%{python2_sitearch}/zmq
+%exclude %{python2_sitearch}/zmq/tests
 
-%files tests
+%files -n python2-%{modname}-tests
 %defattr(-,root,root,-)
-%{python_sitearch}/zmq/tests
+%{python2_sitearch}/zmq/tests
 
 %if 0%{?with_python3}
 %files -n python%{python3_pkgversion}-zmq
@@ -227,6 +244,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Wed Oct 14 2015 Thomas Spura <tomspur@fedoraproject.org> - 14.7.0-2
+- Use python_provide macro
+
 * Mon Jun 29 2015 Ralph Bean <rbean@redhat.com> - 14.7.0-2
 - Support python34 on EPEL7.
 
