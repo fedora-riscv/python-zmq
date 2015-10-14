@@ -159,22 +159,12 @@ chmod -x examples/pubsub/topics_sub.py
 #find examples -name '.*' | xargs rm -v
 
 
-%if 0%{?with_python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
-rm -r %{py3dir}/examples
-2to3 --write --nobackups %{py3dir}/zmq/green
-%endif
-
 
 %build
-CFLAGS="%{optflags}" %{__python2} setupegg.py build
+%py2_build
 
 %if 0%{?with_python3}
-pushd %{py3dir}
-CFLAGS="%{optflags}" %{__python3} setup.py build
-popd
+%py3_build
 %endif # with_python3
 
 
@@ -185,15 +175,13 @@ popd
 # overwritten with every setup.py install (and we want the python2 version
 # to be the default for now).
 %if 0%{?with_python3}
-pushd %{py3dir}
-%{__python3} setup.py install --skip-build --root %{buildroot}
+%py3_install
 
-popd
 chrpath --delete %{buildroot}%{python3_sitearch}%{RPATH}/*.so
 %endif # with_python3
 
 
-%{__python} setupegg.py install -O1 --skip-build --root %{buildroot}
+%py2_install
 
 chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
@@ -201,36 +189,28 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %check
 %if 0%{?run_tests}
     rm zmq/__*
-    PYTHONPATH=%{buildroot}%{python_sitearch} \
-        %{__python} setup.py test
+    PYTHONPATH=%{buildroot}%{python2_sitearch} \
+        %{__python2} setup.py test
 
     %if 0%{?with_python3}
-    # there is no python3-nose yet
-    pushd %{py3dir}
-    rm zmq/__*
-    # Temporarily disable the testsuite for now as it currently hangs in koji:
-    # http://koji.fedoraproject.org/koji/taskinfo?taskID=10191201
-    #PYTHONPATH=%{buildroot}%{python3_sitearch} \
-    #    %{__python3} setup.py test
-    popd
+    #rm zmq/__*
+    PYTHONPATH=%{buildroot}%{python3_sitearch} \
+        %{__python3} setup.py test
     %endif
 %endif
 
 
 %files -n python2-%{modname}
-%defattr(-,root,root,-)
 %doc README.md COPYING.* examples/
 %{python2_sitearch}/%{srcname}-*.egg-info
 %{python2_sitearch}/zmq
 %exclude %{python2_sitearch}/zmq/tests
 
 %files -n python2-%{modname}-tests
-%defattr(-,root,root,-)
 %{python2_sitearch}/zmq/tests
 
 %if 0%{?with_python3}
 %files -n python%{python3_pkgversion}-zmq
-%defattr(-,root,root,-)
 %doc README.md COPYING.*
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
@@ -238,14 +218,14 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 %exclude %{python3_sitearch}/zmq/tests
 
 %files -n python%{python3_pkgversion}-zmq-tests
-%defattr(-,root,root,-)
 %{python3_sitearch}/zmq/tests
 %endif
 
 
 %changelog
 * Wed Oct 14 2015 Thomas Spura <tomspur@fedoraproject.org> - 14.7.0-2
-- Use python_provide macro
+- Use python_provide and py_build macros
+- Cleanup spec
 
 * Mon Jun 29 2015 Ralph Bean <rbean@redhat.com> - 14.7.0-2
 - Support python34 on EPEL7.
