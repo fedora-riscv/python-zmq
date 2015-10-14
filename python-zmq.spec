@@ -198,7 +198,7 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
     #rm zmq/__*
     #PYTHONPATH=%{buildroot}%{python3_sitearch} \
     #    %{__python3} setup.py test
-    #%endif
+    %endif
 %endif
 
 
