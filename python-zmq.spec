@@ -23,7 +23,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -225,6 +225,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Fri Oct 16 2015 Thomas Spura <tomspur@fedoraproject.org> - 14.7.0-3
+- rebuilt to pick up new obsoletes/provides
+
 * Wed Oct 14 2015 Thomas Spura <tomspur@fedoraproject.org> - 14.7.0-2
 - Use python_provide and py_build macros
 - Cleanup spec
