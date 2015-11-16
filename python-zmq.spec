@@ -23,7 +23,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -161,6 +161,7 @@ chmod -x examples/pubsub/topics_sub.py
 
 
 %build
+%global py_setup setupegg.py
 %py2_build
 
 %if 0%{?with_python3}
@@ -225,6 +226,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Mon Nov 16 2015 Thomas Spura <tomspur@fedoraproject.org> - 14.7.0-5
+- Use setupegg.py for building/installing to have an unzip'ed egg
+
 * Tue Nov 10 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 14.7.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Changes/python3.5
 
