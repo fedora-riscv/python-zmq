@@ -11,8 +11,8 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        14.7.0
-Release:        7%{?dist}
+Version:        15.3.0
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -23,15 +23,19 @@ URL:            http://www.zeromq.org/bindings:python
 # git clone http://github.com/zeromq/pyzmq.git pyzmq.git
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
+#Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
+Source0:        https://github.com/zeromq/pyzmq/archive/v%{version}.tar.gz#/pyzmq-%{version}.tar.gz
 
 BuildRequires:  chrpath
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
 BuildRequires:  zeromq-devel
-BuildRequires:  python-nose
 BuildRequires:  Cython
+%if 0%{?run_tests}
+BuildRequires:  pytest
+BuildRequires:  python-tornado
+%endif
 
 # For some tests
 # czmq currently FTBFS, so enable it some time later
@@ -42,7 +46,10 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 # needed for 2to3
 BuildRequires:  python-tools
-BuildRequires:  python%{python3_pkgversion}-nose
+%if 0%{?run_tests}
+BuildRequires:  python%{python3_pkgversion}-pytest
+BuildRequires:  python%{python3_pkgversion}-tornado
+%endif
 %endif
 
 
@@ -175,25 +182,31 @@ chrpath --delete %{buildroot}%{python3_sitearch}%{RPATH}/*.so
 
 chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
+# Remove Python 3 only code from python2 package
+rm  %{buildroot}%{python2_sitearch}/zmq/asyncio.py \
+    %{buildroot}%{python2_sitearch}/zmq/auth/asyncio.py \
+    %{buildroot}%{python2_sitearch}/zmq/tests/*test_asyncio.py \
+    %{buildroot}%{python2_sitearch}/zmq/tests/test_future.py
+
 
 %check
 %if 0%{?run_tests}
-    rm zmq/__*
+    # Make sure we import from the install directory
+    rm zmq/__*.py
+    PYTHONPATH=%{buildroot}%{python3_sitearch} \
+        %{__python3} setup.py test
+
+    # Remove Python 3 only tests
+    rm  zmq/asyncio.py zmq/auth/asyncio.py \
+        zmq/tests/*test_asyncio.py zmq/tests/test_future.py
     PYTHONPATH=%{buildroot}%{python2_sitearch} \
         %{__python2} setup.py test
-
-    %if 0%{?with_python3}
-    # Temporarily disable the testsuite for now as it currently hangs in koji:
-    # http://koji.fedoraproject.org/koji/taskinfo?taskID=10191201
-    #rm zmq/__*
-    #PYTHONPATH=%{buildroot}%{python3_sitearch} \
-    #    %{__python3} setup.py test
-    %endif
 %endif
 
 
 %files -n python2-%{modname}
-%doc README.md COPYING.* examples/
+%license COPYING.*
+%doc README.md examples/
 %{python2_sitearch}/%{srcname}-*.egg-info
 %{python2_sitearch}/zmq
 %exclude %{python2_sitearch}/zmq/tests
@@ -203,7 +216,8 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 %if 0%{?with_python3}
 %files -n python%{python3_pkgversion}-zmq
-%doc README.md COPYING.*
+%license COPYING.*
+%doc README.md
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
 %{python3_sitearch}/zmq
@@ -215,6 +229,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Tue Jul 12 2016 Orion Poplawski <orion@cora.nwra.com> - 15.3.0-1
+- Update to 15.3.0
+
 * Tue Jul 12 2016 Orion Poplawski <orion@cora.nwra.com> - 14.7.0-7
 - Use modern provides filtering
 
