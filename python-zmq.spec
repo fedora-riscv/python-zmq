@@ -1,18 +1,7 @@
 %global with_python3 1
 
-%if 0%{?fedora}
-%{!?python3_pkgversion: %global python3_pkgversion 3}
-%else
-%{!?python3_pkgversion: %global python3_pkgversion 34}
-%endif
-
-%{?filter_setup:
-%filter_provides_in %{python_sitearch}/.*\.so$
-%if 0%{?with_python3}
-%filter_provides_in %{python3_sitearch}/.*\.so$
-%endif
-%filter_setup
-}
+# we don't want to provide private python extension libs in either the python2 or python3 dirs
+%global __provides_exclude_from ^(%{python2_sitearch}|%{python3_sitearch})/.*\\.so$
 
 %global checkout 18f5d061558a176f5496aa8e049182c1a7da64f6
 
@@ -23,7 +12,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -226,6 +215,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Tue Jul 12 2016 Orion Poplawski <orion@cora.nwra.com> - 14.7.0-7
+- Use modern provides filtering
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 14.7.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
