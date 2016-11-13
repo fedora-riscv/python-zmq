@@ -11,8 +11,8 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        15.3.0
-Release:        2%{?dist}
+Version:        16.0.1
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -23,7 +23,6 @@ URL:            http://www.zeromq.org/bindings:python
 # git clone http://github.com/zeromq/pyzmq.git pyzmq.git
 # cd pyzmq.git
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-#Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
 Source0:        https://github.com/zeromq/pyzmq/archive/v%{version}.tar.gz#/pyzmq-%{version}.tar.gz
 
 BuildRequires:  chrpath
@@ -157,10 +156,11 @@ chmod -x examples/pubsub/topics_sub.py
 
 
 %build
-%global py_setup setupegg.py
+CFLAGS="%{optflags}" %{__python2} setup.py build_ext --inplace
 %py2_build
 
 %if 0%{?with_python3}
+CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 %py3_build
 %endif # with_python3
 
@@ -174,31 +174,22 @@ chmod -x examples/pubsub/topics_sub.py
 %if 0%{?with_python3}
 %py3_install
 
-chrpath --delete %{buildroot}%{python3_sitearch}%{RPATH}/*.so
 %endif # with_python3
 
 
 %py2_install
 
-chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
-
-# Remove Python 3 only code from python2 package
-rm  %{buildroot}%{python2_sitearch}/zmq/asyncio.py \
-    %{buildroot}%{python2_sitearch}/zmq/auth/asyncio.py \
-    %{buildroot}%{python2_sitearch}/zmq/tests/*test_asyncio.py \
-    %{buildroot}%{python2_sitearch}/zmq/tests/test_future.py
-
 
 %check
 %if 0%{?run_tests}
     # Make sure we import from the install directory
-    rm zmq/__*.py
+    #rm zmq/__*.py
     PYTHONPATH=%{buildroot}%{python3_sitearch} \
         %{__python3} setup.py test
 
     # Remove Python 3 only tests
-    rm  zmq/asyncio.py zmq/auth/asyncio.py \
-        zmq/tests/*test_asyncio.py zmq/tests/test_future.py
+    #rm  zmq/asyncio.py zmq/auth/asyncio.py \
+    #    zmq/tests/*test_asyncio.py zmq/tests/test_future.py
     PYTHONPATH=%{buildroot}%{python2_sitearch} \
         %{__python2} setup.py test
 %endif
@@ -229,6 +220,10 @@ rm  %{buildroot}%{python2_sitearch}/zmq/asyncio.py \
 
 
 %changelog
+* Sun Nov 13 2016 Thomas Spura <tomspur@fedoraproject.org> - 16.0.1-1
+- update to 16.0.1
+- build twice (for installing and testing in-place)
+
 * Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 15.3.0-2
 - https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
 
