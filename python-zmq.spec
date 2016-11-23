@@ -11,7 +11,7 @@
 %global run_tests 1
 
 Name:           python-zmq
-Version:        16.0.1
+Version:        16.0.2
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -220,6 +220,9 @@ CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 
 
 %changelog
+* Wed Nov 23 2016 Kevin Fenzi <kevin@scrye.com> - 16.0.2-1
+- Update to 16.0.2. Fixes bug #1397615
+
 * Sun Nov 13 2016 Thomas Spura <tomspur@fedoraproject.org> - 16.0.1-1
 - update to 16.0.1
 - build twice (for installing and testing in-place)
