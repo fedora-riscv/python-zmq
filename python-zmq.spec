@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        16.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -220,6 +220,9 @@ CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 
 
 %changelog
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 16.0.2-2
+- Rebuild for Python 3.6
+
 * Wed Nov 23 2016 Kevin Fenzi <kevin@scrye.com> - 16.0.2-1
 - Update to 16.0.2. Fixes bug #1397615
 
