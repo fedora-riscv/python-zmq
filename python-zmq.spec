@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        16.0.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -220,6 +220,9 @@ CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 
 
 %changelog
+* Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 16.0.2-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 16.0.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
