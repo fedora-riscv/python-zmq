@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        16.0.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -28,12 +28,12 @@ Source0:        https://github.com/zeromq/pyzmq/archive/v%{version}.tar.gz#/pyzm
 BuildRequires:  chrpath
 
 BuildRequires:  python2-devel
-BuildRequires:  python-setuptools
+BuildRequires:  python2-setuptools
 BuildRequires:  zeromq-devel
-BuildRequires:  Cython
+BuildRequires:  python2-Cython
 %if 0%{?run_tests}
-BuildRequires:  pytest
-BuildRequires:  python-tornado
+BuildRequires:  python2-pytest
+BuildRequires:  python2-tornado
 %endif
 
 # For some tests
@@ -44,7 +44,7 @@ BuildRequires:  python-tornado
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 # needed for 2to3
-BuildRequires:  python-tools
+BuildRequires:  python2-tools
 %if 0%{?run_tests}
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-tornado
@@ -220,6 +220,10 @@ CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 
 
 %changelog
+* Wed Jan 31 2018 Iryna Shcherbina <ishcherb@redhat.com> - 16.0.2-6
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 16.0.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
