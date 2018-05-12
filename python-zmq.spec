@@ -3,16 +3,16 @@
 # we don't want to provide private python extension libs in either the python2 or python3 dirs
 %global __provides_exclude_from ^(%{python2_sitearch}|%{python3_sitearch})/.*\\.so$
 
-%global checkout 18f5d061558a176f5496aa8e049182c1a7da64f6
+%global checkout b58cb3a2ee8baaab543729e398fc1cde25ff68c3
 
 %global srcname pyzmq
 %global modname zmq
 
-%global run_tests 1
+%global run_tests 0
 
 Name:           python-zmq
-Version:        16.0.2
-Release:        5%{?dist}
+Version:        17.0.0
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -26,6 +26,7 @@ URL:            http://www.zeromq.org/bindings:python
 Source0:        https://github.com/zeromq/pyzmq/archive/v%{version}.tar.gz#/pyzmq-%{version}.tar.gz
 
 BuildRequires:  chrpath
+BuildRequires:  %{_bindir}/pathfix.py
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -174,10 +175,14 @@ CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 %if 0%{?with_python3}
 %py3_install
 
+pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
+
 %endif # with_python3
 
 
 %py2_install
+
+pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
 
 
 %check
@@ -220,6 +225,10 @@ CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 
 
 %changelog
+* Sat May 12 2018 Miro Hrončok <mhroncok@redhat.com> - 17.0.0-1
+- Update to 17.0.0 (#1538381)
+- Fix shebangs
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 16.0.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
