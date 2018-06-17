@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        17.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -225,6 +225,9 @@ pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
 
 
 %changelog
+* Sun Jun 17 2018 Miro Hrončok <mhroncok@redhat.com> - 17.0.0-2
+- Rebuilt for Python 3.7
+
 * Sat May 12 2018 Miro Hrončok <mhroncok@redhat.com> - 17.0.0-1
 - Update to 17.0.0 (#1538381)
 - Fix shebangs
