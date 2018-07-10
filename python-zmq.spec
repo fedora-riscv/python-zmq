@@ -25,6 +25,7 @@ URL:            http://www.zeromq.org/bindings:python
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        https://github.com/zeromq/pyzmq/archive/v%{version}.tar.gz#/pyzmq-%{version}.tar.gz
 
+BuildRequires:  gcc
 BuildRequires:  chrpath
 BuildRequires:  %{_bindir}/pathfix.py
 
