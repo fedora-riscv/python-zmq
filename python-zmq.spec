@@ -15,7 +15,6 @@ Version:        17.0.0
 Release:        3%{?dist}
 Summary:        Software library for fast, message-based applications
 
-Group:          Development/Libraries
 License:        LGPLv3+ and ASL 2.0 and BSD
 URL:            http://www.zeromq.org/bindings:python
 # VCS:          git:http://github.com/zeromq/pyzmq.git
@@ -80,7 +79,6 @@ This package contains the python bindings.
 
 %package -n python2-zmq-tests
 Summary:        Software library for fast, message-based applications
-Group:          Development/Libraries
 License:        LGPLv3+
 Requires:       python2-zmq = %{version}-%{release}
 %{?python_provide:%python_provide python2-%{modname}-tests}
@@ -98,7 +96,6 @@ This package contains the testsuite for the python bindings.
 %if 0%{?with_python3}
 %package -n python%{python3_pkgversion}-zmq
 Summary:        Software library for fast, message-based applications
-Group:          Development/Libraries
 License:        LGPLv3+
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}}
 %description -n python%{python3_pkgversion}-zmq
@@ -114,7 +111,6 @@ This package contains the python bindings.
 
 %package -n python%{python3_pkgversion}-zmq-tests
 Summary:        Software library for fast, message-based applications
-Group:          Development/Libraries
 License:        LGPLv3+
 Requires:       python%{python3_pkgversion}-zmq = %{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}-tests}
