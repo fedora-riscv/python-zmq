@@ -154,11 +154,9 @@ chmod -x examples/pubsub/topics_sub.py
 
 
 %build
-CFLAGS="%{optflags}" %{__python2} setup.py build_ext --inplace
 %py2_build
 
 %if 0%{?with_python3}
-CFLAGS="%{optflags}" %{__python3} setup.py build_ext --inplace
 %py3_build
 %endif # with_python3
 
