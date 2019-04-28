@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -215,6 +215,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Sun Apr 28 2019 FeRD (Frank Dana) <ferdnyc@gmail.com> - 14.7.0-8
+- Rebuild for Python 3.6
+
 * Tue Jul 12 2016 Orion Poplawski <orion@cora.nwra.com> - 14.7.0-7
 - Use modern provides filtering
 
