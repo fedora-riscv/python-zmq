@@ -31,7 +31,9 @@ BuildRequires:  %{_bindir}/pathfix.py
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
 BuildRequires:  zeromq-devel
+%if ! 0%{?with_python3}
 BuildRequires:  python2-Cython
+%endif
 %if 0%{?run_tests}
 BuildRequires:  python2-pytest
 BuildRequires:  python2-tornado
@@ -44,8 +46,8 @@ BuildRequires:  python2-tornado
 %if 0%{?with_python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-Cython
 # needed for 2to3
-BuildRequires:  python2-tools
 %if 0%{?run_tests}
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-tornado
@@ -134,8 +136,12 @@ This package contains the testsuite for the python bindings.
 rm -rf bundled
 
 # forcibly regenerate the Cython-generated .c files:
-#find zmq -name "*.c" -delete
-#%%{__python} setup.py cython
+find zmq -name "*.c" -delete
+%if 0%{?with_python3}
+%{__python3} setup.py cython
+%else
+%{__python2} setup.py cython
+%endif
 
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
