@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -45,6 +45,9 @@ BuildRequires:  python-tools
 BuildRequires:  python%{python3_pkgversion}-nose
 %endif
 
+# Explicit Requires zeromq
+# to not install sclo-cassandra3-zeromq instead zeromq
+Requires: zeromq
 
 %description
 The 0MQ lightweight messaging kernel is a library which extends the
@@ -215,6 +218,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Sun Jun 02 2019 Sérgio Basto <sergio@serjux.com> - 14.7.0-9
+- Explicit Requires zeromq
+
 * Sun Apr 28 2019 FeRD (Frank Dana) <ferdnyc@gmail.com> - 14.7.0-8
 - Rebuild for Python 3.6
 
