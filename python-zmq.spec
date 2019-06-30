@@ -11,7 +11,7 @@
 %global run_tests 0
 
 Name:           python-zmq
-Version:        18.0.1
+Version:        18.0.2
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -226,6 +226,9 @@ pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
 
 
 %changelog
+* Sun Jun 30 2019 Kevin Fenzi <kevin@scrye.com> - 18.0.2-1
+- Update to 18.0.2. Fixes bug #1724706
+
 * Mon Apr 29 2019 Kevin Fenzi <kevin@scrye.com> - 18.0.1-1
 - Update to 18.0.1. Fixes bug #1601128
 
