@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        18.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -226,6 +226,9 @@ pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
 
 
 %changelog
+* Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 18.0.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Sun Jun 30 2019 Kevin Fenzi <kevin@scrye.com> - 18.0.2-1
 - Update to 18.0.2. Fixes bug #1724706
 
