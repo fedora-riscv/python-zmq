@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        18.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -226,6 +226,9 @@ pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
 
 
 %changelog
+* Thu Oct 03 2019 Miro Hrončok <mhroncok@redhat.com> - 18.0.2-4
+- Rebuilt for Python 3.8.0rc1 (#1748018)
+
 * Fri Aug 16 2019 Miro Hrončok <mhroncok@redhat.com> - 18.0.2-3
 - Rebuilt for Python 3.8
 
