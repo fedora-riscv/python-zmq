@@ -11,8 +11,8 @@
 %global run_tests 0
 
 Name:           python-zmq
-Version:        18.0.2
-Release:        4%{?dist}
+Version:        18.1.0
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -226,6 +226,9 @@ pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
 
 
 %changelog
+* Sun Oct 06 2019 Kevin Fenzi <kevin@scrye.com> - 18.1.0-1
+- Update to 18.1.0. Fixes bug #1742606
+
 * Thu Oct 03 2019 Miro Hrončok <mhroncok@redhat.com> - 18.0.2-4
 - Rebuilt for Python 3.8.0rc1 (#1748018)
 
