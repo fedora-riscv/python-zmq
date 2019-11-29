@@ -1,7 +1,5 @@
-%global with_python3 1
-
-# we don't want to provide private python extension libs in either the python2 or python3 dirs
-%global __provides_exclude_from ^(%{python2_sitearch}|%{python3_sitearch})/.*\\.so$
+# we don't want to provide private python extension libs in python3 dirs
+%global __provides_exclude_from ^%{python3_sitearch}/.*\\.so$
 
 %global checkout b58cb3a2ee8baaab543729e398fc1cde25ff68c3
 
@@ -12,7 +10,7 @@
 
 Name:           python-zmq
 Version:        18.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -28,30 +26,18 @@ BuildRequires:  gcc
 BuildRequires:  chrpath
 BuildRequires:  %{_bindir}/pathfix.py
 
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
 BuildRequires:  zeromq-devel
-%if ! 0%{?with_python3}
-BuildRequires:  python2-Cython
-%endif
-%if 0%{?run_tests}
-BuildRequires:  python2-pytest
-BuildRequires:  python2-tornado
-%endif
 
 # For some tests
 # czmq currently FTBFS, so enable it some time later
 #BuildRequires:  czmq-devel
 
-%if 0%{?with_python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-Cython
-# needed for 2to3
 %if 0%{?run_tests}
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-tornado
-%endif
 %endif
 
 
@@ -65,39 +51,9 @@ multiple transport protocols and more.
 
 This package contains the python bindings.
 
-%package -n python2-zmq
-Summary:        Software library for fast, message-based applications
-%{?python_provide:%python_provide python2-%{modname}}
-%description -n python2-zmq
-The 0MQ lightweight messaging kernel is a library which extends the
-standard socket interfaces with features traditionally provided by
-specialized messaging middle-ware products. 0MQ sockets provide an
-abstraction of asynchronous message queues, multiple messaging
-patterns, message filtering (subscriptions), seamless access to
-multiple transport protocols and more.
 
-This package contains the python bindings.
-
-
-%package -n python2-zmq-tests
-Summary:        Software library for fast, message-based applications
-License:        LGPLv3+
-Requires:       python2-zmq = %{version}-%{release}
-%{?python_provide:%python_provide python2-%{modname}-tests}
-%description -n python2-zmq-tests
-The 0MQ lightweight messaging kernel is a library which extends the
-standard socket interfaces with features traditionally provided by
-specialized messaging middle-ware products. 0MQ sockets provide an
-abstraction of asynchronous message queues, multiple messaging
-patterns, message filtering (subscriptions), seamless access to
-multiple transport protocols and more.
-
-This package contains the testsuite for the python bindings.
-
-
-%if 0%{?with_python3}
 %package -n python%{python3_pkgversion}-zmq
-Summary:        Software library for fast, message-based applications
+Summary:        %{summary}
 License:        LGPLv3+
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}}
 %description -n python%{python3_pkgversion}-zmq
@@ -112,7 +68,7 @@ This package contains the python bindings.
 
 
 %package -n python%{python3_pkgversion}-zmq-tests
-Summary:        Software library for fast, message-based applications
+Summary:        %{summary}, testsuite
 License:        LGPLv3+
 Requires:       python%{python3_pkgversion}-zmq = %{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}-tests}
@@ -126,8 +82,6 @@ multiple transport protocols and more.
 
 This package contains the testsuite for the python bindings.
 
-%endif
-
 
 %prep
 %setup -q -n %{srcname}-%{version}
@@ -137,11 +91,7 @@ rm -rf bundled
 
 # forcibly regenerate the Cython-generated .c files:
 find zmq -name "*.c" -delete
-%if 0%{?with_python3}
 %{__python3} setup.py cython
-%else
-%{__python2} setup.py cython
-%endif
 
 # remove shebangs
 for lib in zmq/eventloop/*.py; do
@@ -158,32 +108,14 @@ chmod -x examples/pubsub/topics_sub.py
 #find examples -name '.*' | xargs rm -v
 
 
-
 %build
-%py2_build
-
-%if 0%{?with_python3}
 %py3_build
-%endif # with_python3
-
 
 
 %install
 %global RPATH /zmq/{backend/cython,devices}
-# Must do the python3 install first because the scripts in /usr/bin are
-# overwritten with every setup.py install (and we want the python2 version
-# to be the default for now).
-%if 0%{?with_python3}
 %py3_install
-
 pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
-
-%endif # with_python3
-
-
-%py2_install
-
-pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
 
 
 %check
@@ -192,40 +124,26 @@ pathfix.py -pn -i %{__python2} %{buildroot}%{python2_sitearch}
     #rm zmq/__*.py
     PYTHONPATH=%{buildroot}%{python3_sitearch} \
         %{__python3} setup.py test
-
-    # Remove Python 3 only tests
-    #rm  zmq/asyncio.py zmq/auth/asyncio.py \
-    #    zmq/tests/*test_asyncio.py zmq/tests/test_future.py
-    PYTHONPATH=%{buildroot}%{python2_sitearch} \
-        %{__python2} setup.py test
 %endif
 
 
-%files -n python2-%{modname}
-%license COPYING.*
-%doc README.md examples/
-%{python2_sitearch}/%{srcname}-*.egg-info
-%{python2_sitearch}/zmq
-%exclude %{python2_sitearch}/zmq/tests
-
-%files -n python2-%{modname}-tests
-%{python2_sitearch}/zmq/tests
-
-%if 0%{?with_python3}
 %files -n python%{python3_pkgversion}-zmq
 %license COPYING.*
 %doc README.md
 # examples/
 %{python3_sitearch}/%{srcname}-*.egg-info
-%{python3_sitearch}/zmq
+%{python3_sitearch}/zmq/
 %exclude %{python3_sitearch}/zmq/tests
 
 %files -n python%{python3_pkgversion}-zmq-tests
-%{python3_sitearch}/zmq/tests
-%endif
+%{python3_sitearch}/zmq/tests/
 
 
 %changelog
+* Fri Nov 29 2019 Miro Hrončok <mhroncok@redhat.com> - 18.1.0-2
+- Subpackages python2-zmq, python2-zmq-test have been removed
+  See https://fedoraproject.org/wiki/Changes/RetirePython2
+
 * Sun Oct 06 2019 Kevin Fenzi <kevin@scrye.com> - 18.1.0-1
 - Update to 18.1.0. Fixes bug #1742606
 
