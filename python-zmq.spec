@@ -22,6 +22,7 @@ URL:            http://www.zeromq.org/bindings:python
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        https://github.com/zeromq/pyzmq/archive/v%{version}.tar.gz#/pyzmq-%{version}.tar.gz
 
+Provides:       python%{python3_pkgversion}-pyzmq = %{version}
 BuildRequires:  gcc
 BuildRequires:  chrpath
 BuildRequires:  %{_bindir}/pathfix.py
@@ -140,6 +141,10 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Tue Jan 14 2020 Jochen Breuer <jbreuer@suse.de> - 18.1.0-3
+- Providing python-pyzmq, since some packages are still relying on that.
+  See: https://bugzilla.redhat.com/show_bug.cgi?id=1789889
+
 * Fri Nov 29 2019 Miro Hrončok <mhroncok@redhat.com> - 18.1.0-2
 - Subpackages python2-zmq, python2-zmq-test have been removed
   See https://fedoraproject.org/wiki/Changes/RetirePython2
