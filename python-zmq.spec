@@ -25,6 +25,7 @@ URL:            http://www.zeromq.org/bindings:python
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
 
+Provides:       python%{python3_pkgversion}-pyzmq = %{version}
 BuildRequires:  chrpath
 
 BuildRequires:  python2-devel
@@ -218,6 +219,10 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Tue Jan 28 2020 Jochen Breuer <jbreuer@suse.de> - 14.7.0-10
+- Providing python-pyzmq, since some packages are still relying on that.
+  See: https://bugzilla.redhat.com/show_bug.cgi?id=1789889 
+
 * Sun Jun 02 2019 Sérgio Basto <sergio@serjux.com> - 14.7.0-9
 - Explicit Requires zeromq
 
