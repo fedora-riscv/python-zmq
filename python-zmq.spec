@@ -10,7 +10,7 @@
 
 Name:           python-zmq
 Version:        18.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -141,6 +141,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 18.1.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Tue Jan 14 2020 Jochen Breuer <jbreuer@suse.de> - 18.1.0-3
 - Providing python-pyzmq, since some packages are still relying on that.
   See: https://bugzilla.redhat.com/show_bug.cgi?id=1789889
