@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
