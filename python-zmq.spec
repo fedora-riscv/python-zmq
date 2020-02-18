@@ -12,7 +12,7 @@
 
 Name:           python-zmq
 Version:        14.7.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Software library for fast, message-based applications
 
 Group:          Development/Libraries
@@ -25,7 +25,6 @@ URL:            http://www.zeromq.org/bindings:python
 # git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
 Source0:        https://pypi.python.org/packages/source/p/pyzmq/pyzmq-%{version}.tar.gz
 
-Provides:       python%{python3_pkgversion}-pyzmq = %{version}
 BuildRequires:  chrpath
 
 BuildRequires:  python2-devel
@@ -61,6 +60,7 @@ multiple transport protocols and more.
 This package contains the python bindings.
 
 %package -n python2-zmq
+Provides:       python-pyzmq = %{version}
 Summary:        Software library for fast, message-based applications
 %{?python_provide:%python_provide python2-%{modname}}
 %description -n python2-zmq
@@ -93,6 +93,7 @@ This package contains the testsuite for the python bindings.
 
 %if 0%{?with_python3}
 %package -n python%{python3_pkgversion}-zmq
+Provides:       python%{python3_pkgversion}-pyzmq = %{version}
 Summary:        Software library for fast, message-based applications
 Group:          Development/Libraries
 License:        LGPLv3+
@@ -219,6 +220,9 @@ chrpath --delete %{buildroot}%{python_sitearch}%{RPATH}/*.so
 
 
 %changelog
+* Tue Feb 18 2020 Kevin Fenzi <kevin@scrye.com> - 14.7.0-11
+- Fix provides for python-pyzmq
+
 * Tue Jan 28 2020 Jochen Breuer <jbreuer@suse.de> - 14.7.0-10
 - Providing python-pyzmq, since some packages are still relying on that.
   See: https://bugzilla.redhat.com/show_bug.cgi?id=1789889 
