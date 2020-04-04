@@ -1,28 +1,31 @@
-# we don't want to provide private python extension libs in python3 dirs
-%global __provides_exclude_from ^%{python3_sitearch}/.*\\.so$
-
-%global checkout b58cb3a2ee8baaab543729e398fc1cde25ff68c3
-
+# what it's called on pypi
 %global srcname pyzmq
-%global modname zmq
+# what it's imported as
+%global libname zmq
+# name of egg info directory
+%global eggname %{srcname}
+# package name fragment
+%global pkgname %{libname}
+
+%global common_description %{expand:
+The 0MQ lightweight messaging kernel is a library which extends the
+standard socket interfaces with features traditionally provided by
+specialized messaging middle-ware products. 0MQ sockets provide an
+abstraction of asynchronous message queues, multiple messaging
+patterns, message filtering (subscriptions), seamless access to
+multiple transport protocols and more.}
 
 %global run_tests 0
 
-Name:           python-zmq
-Version:        18.1.0
-Release:        3%{?dist}
+Name:           python-%{pkgname}
+Version:        19.0.0
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
-URL:            http://www.zeromq.org/bindings:python
-# VCS:          git:http://github.com/zeromq/pyzmq.git
-# git checkout with the commands:
-# git clone http://github.com/zeromq/pyzmq.git pyzmq.git
-# cd pyzmq.git
-# git archive --format=tar --prefix=pyzmq-%%{version}/ %%{checkout} | xz -z --force - > pyzmq-%%{version}.tar.xz
-Source0:        https://github.com/zeromq/pyzmq/archive/v%{version}.tar.gz#/pyzmq-%{version}.tar.gz
+URL:            https://zeromq.org/languages/python/
+Source0:        %pypi_source
 
-Provides:       python%{python3_pkgversion}-pyzmq = %{version}
 BuildRequires:  gcc
 BuildRequires:  chrpath
 BuildRequires:  %{_bindir}/pathfix.py
@@ -42,44 +45,30 @@ BuildRequires:  python%{python3_pkgversion}-tornado
 %endif
 
 
-%description
-The 0MQ lightweight messaging kernel is a library which extends the
-standard socket interfaces with features traditionally provided by
-specialized messaging middle-ware products. 0MQ sockets provide an
-abstraction of asynchronous message queues, multiple messaging
-patterns, message filtering (subscriptions), seamless access to
-multiple transport protocols and more.
-
-This package contains the python bindings.
+%description %{common_description}
 
 
-%package -n python%{python3_pkgversion}-zmq
+%package -n python%{python3_pkgversion}-%{pkgname}
 Summary:        %{summary}
 License:        LGPLv3+
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}}
-%description -n python%{python3_pkgversion}-zmq
-The 0MQ lightweight messaging kernel is a library which extends the
-standard socket interfaces with features traditionally provided by
-specialized messaging middle-ware products. 0MQ sockets provide an
-abstraction of asynchronous message queues, multiple messaging
-patterns, message filtering (subscriptions), seamless access to
-multiple transport protocols and more.
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{pkgname}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
+Provides:       python%{python3_pkgversion}-%{srcname} = %{version}-%{release}
+
+%description -n python%{python3_pkgversion}-%{pkgname} %{common_description}
 
 This package contains the python bindings.
 
 
-%package -n python%{python3_pkgversion}-zmq-tests
+%package -n python%{python3_pkgversion}-%{pkgname}-tests
 Summary:        %{summary}, testsuite
 License:        LGPLv3+
 Requires:       python%{python3_pkgversion}-zmq = %{version}-%{release}
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}-tests}
-%description -n python%{python3_pkgversion}-zmq-tests
-The 0MQ lightweight messaging kernel is a library which extends the
-standard socket interfaces with features traditionally provided by
-specialized messaging middle-ware products. 0MQ sockets provide an
-abstraction of asynchronous message queues, multiple messaging
-patterns, message filtering (subscriptions), seamless access to
-multiple transport protocols and more.
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{pkgname}-tests}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}-tests}
+Provides:       python%{python3_pkgversion}-%{srcname}-tests = %{version}-%{release}
+
+%description -n python%{python3_pkgversion}-%{pkgname}-tests %{common_description}
 
 This package contains the testsuite for the python bindings.
 
@@ -128,19 +117,22 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 %endif
 
 
-%files -n python%{python3_pkgversion}-zmq
+%files -n python%{python3_pkgversion}-%{pkgname}
 %license COPYING.*
 %doc README.md
 # examples/
-%{python3_sitearch}/%{srcname}-*.egg-info
-%{python3_sitearch}/zmq/
-%exclude %{python3_sitearch}/zmq/tests
+%{python3_sitearch}/%{eggname}-%{version}-py%{python3_version}.egg-info
+%{python3_sitearch}/%{libname}
+%exclude %{python3_sitearch}/%{libname}/tests
 
-%files -n python%{python3_pkgversion}-zmq-tests
-%{python3_sitearch}/zmq/tests/
+%files -n python%{python3_pkgversion}-%{pkgname}-tests
+%{python3_sitearch}/%{libname}/tests
 
 
 %changelog
+* Fri Apr 03 2020 Carl George <carl@george.computer> - 19.0.0-1
+- Latest upstream rhbz#1772343
+
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 18.1.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
