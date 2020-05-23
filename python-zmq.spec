@@ -19,7 +19,7 @@ multiple transport protocols and more.}
 
 Name:           python-%{pkgname}
 Version:        19.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -130,6 +130,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Sat May 23 2020 Miro Hrončok <mhroncok@redhat.com> - 19.0.0-2
+- Rebuilt for Python 3.9
+
 * Fri Apr 03 2020 Carl George <carl@george.computer> - 19.0.0-1
 - Latest upstream rhbz#1772343
 
