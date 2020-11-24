@@ -18,8 +18,8 @@ multiple transport protocols and more.}
 %global run_tests 0
 
 Name:           python-%{pkgname}
-Version:        19.0.0
-Release:        3%{?dist}
+Version:        19.0.2
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -130,6 +130,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Tue Nov 24 2020 Joel Capitao <jcapitao@redhat.com> - 19.0.2-1
+- Update to 19.0.2
+
 * Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 19.0.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
