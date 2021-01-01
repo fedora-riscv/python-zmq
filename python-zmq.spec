@@ -18,7 +18,7 @@ multiple transport protocols and more.}
 %global run_tests 0
 
 Name:           python-%{pkgname}
-Version:        19.0.2
+Version:        20.0.0
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -130,6 +130,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Thu Dec 31 2020 Kevin Fenzi <kevin@scrye.com> - 20.0.0-1
+- Update to 20.0.0. Fixes rhbz#1832893
+
 * Tue Nov 24 2020 Joel Capitao <jcapitao@redhat.com> - 19.0.2-1
 - Update to 19.0.2
 
