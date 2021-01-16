@@ -18,7 +18,7 @@ multiple transport protocols and more.}
 %global run_tests 0
 
 Name:           python-%{pkgname}
-Version:        20.0.0
+Version:        21.0.0
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -130,6 +130,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Sat Jan 16 2021 Kevin Fenzi <kevin@scrye.com> - 21.0.0-1
+- Update to 21.0.0. Fixes rhbz#1916136
+
 * Thu Dec 31 2020 Kevin Fenzi <kevin@scrye.com> - 20.0.0-1
 - Update to 20.0.0. Fixes rhbz#1832893
 
