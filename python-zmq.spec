@@ -18,8 +18,8 @@ multiple transport protocols and more.}
 %global run_tests 0
 
 Name:           python-%{pkgname}
-Version:        21.0.0
-Release:        2%{?dist}
+Version:        21.0.2
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -130,6 +130,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Thu Jan 28 2021 Kevin Fenzi <kevin@scrye.com> - 21.0.2-1
+- Update to 21.0.2. Fixes rhbz#1920351
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 21.0.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
