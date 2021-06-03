@@ -19,7 +19,7 @@ multiple transport protocols and more.}
 
 Name:           python-%{pkgname}
 Version:        22.0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -130,6 +130,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Thu Jun 03 2021 Python Maint <python-maint@redhat.com> - 22.0.3-2
+- Rebuilt for Python 3.10
+
 * Fri Feb 12 2021 Kevin Fenzi <kevin@scrye.com> - 22.0.3-1
 - Update to 22.0.3. Fixes rhbz#1928104
 
