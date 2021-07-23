@@ -19,7 +19,7 @@ multiple transport protocols and more.}
 
 Name:           python-%{pkgname}
 Version:        22.0.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -130,6 +130,9 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 22.0.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Thu Jun 03 2021 Python Maint <python-maint@redhat.com> - 22.0.3-2
 - Rebuilt for Python 3.10
 
