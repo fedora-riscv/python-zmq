@@ -18,8 +18,8 @@ multiple transport protocols and more.}
 %global run_tests 0
 
 Name:           python-%{pkgname}
-Version:        22.3.0
-Release:        4%{?dist}
+Version:        23.2.0
+Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
@@ -37,13 +37,10 @@ BuildRequires:  zeromq-devel
 #BuildRequires:  czmq-devel
 
 BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python%{python3_pkgversion}-setuptools
-BuildRequires:  python%{python3_pkgversion}-Cython
 %if 0%{?run_tests}
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-tornado
 %endif
-
 
 %description %{common_description}
 
@@ -79,34 +76,25 @@ This package contains the testsuite for the python bindings.
 # remove bundled libraries
 rm -rf bundled
 
-# forcibly regenerate the Cython-generated .c files:
+# remove the Cython .c files in order to regenerate them:
 find zmq -name "*.c" -delete
-%{__python3} setup.py cython
 
 # remove shebangs
-for lib in zmq/eventloop/*.py; do
-    sed '/\/usr\/bin\/env/d' $lib > $lib.new &&
-    touch -r $lib $lib.new &&
-    mv $lib.new $lib
-done
+grep -lr "^#\!/usr/bin/env python" | xargs sed -i "1d"
 
 # remove excecutable bits
-chmod -x examples/pubsub/topics_pub.py
-chmod -x examples/pubsub/topics_sub.py
+find . -type f -executable | xargs chmod -x
 
-# delete hidden files
-#find examples -name '.*' | xargs rm -v
-
+%generate_buildrequires
+%pyproject_buildrequires
 
 %build
-%py3_build
-
+%pyproject_wheel
 
 %install
 %global RPATH /zmq/{backend/cython,devices}
-%py3_install
-pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
-
+%pyproject_install
+%pyproject_save_files zmq
 
 %check
 %if 0%{?run_tests}
@@ -117,12 +105,8 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 %endif
 
 
-%files -n python%{python3_pkgversion}-%{pkgname}
-%license COPYING.*
+%files -n python%{python3_pkgversion}-%{pkgname} -f %{pyproject_files}
 %doc README.md
-# examples/
-%{python3_sitearch}/%{eggname}-%{version}-py%{python3_version}.egg-info
-%{python3_sitearch}/%{libname}
 %exclude %{python3_sitearch}/%{libname}/tests
 
 %files -n python%{python3_pkgversion}-%{pkgname}-tests
@@ -130,6 +114,10 @@ pathfix.py -pn -i %{__python3} %{buildroot}%{python3_sitearch}
 
 
 %changelog
+* Tue Aug 02 2022 Charalampos Stratakis <cstratak@redhat.com> - 23.2.0-1
+- Update to 23.2.0
+Resolves: rhbz#2092836
+
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 22.3.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
