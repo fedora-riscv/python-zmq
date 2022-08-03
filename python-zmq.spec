@@ -15,8 +15,6 @@ abstraction of asynchronous message queues, multiple messaging
 patterns, message filtering (subscriptions), seamless access to
 multiple transport protocols and more.}
 
-%global run_tests 0
-
 Name:           python-%{pkgname}
 Version:        23.2.0
 Release:        1%{?dist}
@@ -32,15 +30,11 @@ BuildRequires:  %{_bindir}/pathfix.py
 
 BuildRequires:  zeromq-devel
 
-# For some tests
-# czmq currently FTBFS, so enable it some time later
-#BuildRequires:  czmq-devel
-
 BuildRequires:  python%{python3_pkgversion}-devel
-%if 0%{?run_tests}
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-tornado
-%endif
+BuildRequires:  python%{python3_pkgversion}-gevent
+BuildRequires:  python%{python3_pkgversion}-numpy
 
 %description %{common_description}
 
@@ -97,12 +91,10 @@ find . -type f -executable | xargs chmod -x
 %pyproject_save_files zmq
 
 %check
-%if 0%{?run_tests}
-    # Make sure we import from the install directory
-    #rm zmq/__*.py
-    PYTHONPATH=%{buildroot}%{python3_sitearch} \
-        %{__python3} setup.py test
-%endif
+# to avoid partially initialized zmq module from cwd
+cd %{_topdir}
+# test_cython does not seem to work with --pyargs / not from cwd
+%pytest --pyargs zmq -k "not test_cython"
 
 
 %files -n python%{python3_pkgversion}-%{pkgname} -f %{pyproject_files}
