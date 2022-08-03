@@ -1,12 +1,3 @@
-# what it's called on pypi
-%global srcname pyzmq
-# what it's imported as
-%global libname zmq
-# name of egg info directory
-%global eggname %{srcname}
-# package name fragment
-%global pkgname %{libname}
-
 %global common_description %{expand:
 The 0MQ lightweight messaging kernel is a library which extends the
 standard socket interfaces with features traditionally provided by
@@ -15,18 +6,16 @@ abstraction of asynchronous message queues, multiple messaging
 patterns, message filtering (subscriptions), seamless access to
 multiple transport protocols and more.}
 
-Name:           python-%{pkgname}
+Name:           python-zmq
 Version:        23.2.0
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
 License:        LGPLv3+ and ASL 2.0 and BSD
 URL:            https://zeromq.org/languages/python/
-Source0:        %pypi_source
+Source0:        %{pypi_source pyzmq}
 
 BuildRequires:  gcc
-BuildRequires:  chrpath
-BuildRequires:  %{_bindir}/pathfix.py
 
 BuildRequires:  zeromq-devel
 
@@ -39,33 +28,29 @@ BuildRequires:  python%{python3_pkgversion}-numpy
 %description %{common_description}
 
 
-%package -n python%{python3_pkgversion}-%{pkgname}
+%package -n python%{python3_pkgversion}-zmq
 Summary:        %{summary}
 License:        LGPLv3+
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{pkgname}}
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
-Provides:       python%{python3_pkgversion}-%{srcname} = %{version}-%{release}
+%py_provides    python%{python3_pkgversion}-pyzmq
 
-%description -n python%{python3_pkgversion}-%{pkgname} %{common_description}
+%description -n python%{python3_pkgversion}-zmq %{common_description}
 
 This package contains the python bindings.
 
 
-%package -n python%{python3_pkgversion}-%{pkgname}-tests
+%package -n python%{python3_pkgversion}-zmq-tests
 Summary:        %{summary}, testsuite
 License:        LGPLv3+
 Requires:       python%{python3_pkgversion}-zmq = %{version}-%{release}
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{pkgname}-tests}
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}-tests}
-Provides:       python%{python3_pkgversion}-%{srcname}-tests = %{version}-%{release}
+%py_provides    python%{python3_pkgversion}-pyzmq-tests
 
-%description -n python%{python3_pkgversion}-%{pkgname}-tests %{common_description}
+%description -n python%{python3_pkgversion}-zmq-tests %{common_description}
 
 This package contains the testsuite for the python bindings.
 
 
 %prep
-%setup -q -n %{srcname}-%{version}
+%setup -q -n pyzmq-%{version}
 
 # remove bundled libraries
 rm -rf bundled
@@ -86,7 +71,6 @@ find . -type f -executable | xargs chmod -x
 %pyproject_wheel
 
 %install
-%global RPATH /zmq/{backend/cython,devices}
 %pyproject_install
 %pyproject_save_files zmq
 
@@ -97,12 +81,12 @@ cd %{_topdir}
 %pytest --pyargs zmq -k "not test_cython"
 
 
-%files -n python%{python3_pkgversion}-%{pkgname} -f %{pyproject_files}
+%files -n python%{python3_pkgversion}-zmq -f %{pyproject_files}
 %doc README.md
-%exclude %{python3_sitearch}/%{libname}/tests
+%exclude %{python3_sitearch}/zmq/tests
 
-%files -n python%{python3_pkgversion}-%{pkgname}-tests
-%{python3_sitearch}/%{libname}/tests
+%files -n python%{python3_pkgversion}-zmq-tests
+%{python3_sitearch}/zmq/tests
 
 
 %changelog
