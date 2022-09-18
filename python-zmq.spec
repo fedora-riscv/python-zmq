@@ -7,7 +7,7 @@ patterns, message filtering (subscriptions), seamless access to
 multiple transport protocols and more.}
 
 Name:           python-zmq
-Version:        23.2.0
+Version:        24.0.0
 Release:        1%{?dist}
 Summary:        Software library for fast, message-based applications
 
@@ -90,6 +90,9 @@ cd %{_topdir}
 
 
 %changelog
+* Sun Sep 18 2022 Kevin Fenzi <kevin@scrye.com> - 24.0.0-1
+- Update to 24.0.0. Fixes rhbz#2127189
+
 * Tue Aug 02 2022 Charalampos Stratakis <cstratak@redhat.com> - 23.2.0-1
 - Update to 23.2.0
 Resolves: rhbz#2092836
